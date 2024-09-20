@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.AuthSQL.security.JwtTokenProvider;
+import com.AuthSQL.model.User;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,4 +27,11 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User userDTO) {
+        User user = userService.createUser(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
 }

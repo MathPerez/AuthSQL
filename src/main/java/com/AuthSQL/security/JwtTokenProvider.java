@@ -18,7 +18,7 @@ public class JwtTokenProvider {
     private final Key secretKey;
 
     public JwtTokenProvider() {
-        // Uma chave segura em Base64 com pelo menos 256 bits (32 caracteres)
+        
         String secret = "YV9sb25nX3NlY3VyZV9iYXNlNjRfZW5jb2RlZF9zZWNyZXRfa2V5X2hlcmVub3dhbGxhbG9vYW4=";
         
         byte[] decodedKey = Decoders.BASE64.decode(secret);
@@ -26,10 +26,9 @@ public class JwtTokenProvider {
 
     }
 
-    // Gera o token com o username
     public String createToken(String username) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + 86400000);  // 1 dia de validade
+        Date validity = new Date(now.getTime() + 86400000); 
 
         return Jwts.builder()
                 .subject(username)
@@ -39,7 +38,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Valida o token e retorna o username
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)

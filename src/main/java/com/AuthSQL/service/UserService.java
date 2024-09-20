@@ -1,7 +1,6 @@
 package com.AuthSQL.service;
 
 import com.AuthSQL.model.User;
-import com.AuthSQL.model.UserDTO;
 import com.AuthSQL.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +14,15 @@ public class UserService {
     private UserRepository userRepository;
 
     public boolean authenticate(String username, String password) {
-        System.out.println("Passou");
-        return "testuser".equals(username) && "testpassword".equals(password);
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            // Aqui você deve verificar se a senha está correta
+            return password.equals(user.getPassword()); // Você pode usar um encoder aqui para comparar senhas hashadas
+        }
+        return false;
     }
 
-    public User createUser(UserDTO userDTO) {
+    public User createUser(User userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword()); 
@@ -34,7 +37,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User updateUser(Long id, UserDTO userDTO) {
+    public User updateUser(Long id, User userDTO) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             user.setUsername(userDTO.getUsername());

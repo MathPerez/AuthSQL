@@ -26,8 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 String username = jwtTokenProvider.getUsernameFromToken(token);
                 if (username != null) {
-                    // Aqui você pode adicionar a lógica de autenticação no contexto
-                    SecurityContextHolder.getContext().setAuthentication(null); // Usuário autenticado
+                    
+                    SecurityContextHolder.getContext().setAuthentication(null); 
                 }
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
