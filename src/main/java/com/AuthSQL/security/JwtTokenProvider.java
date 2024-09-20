@@ -19,7 +19,7 @@ public class JwtTokenProvider {
 
     public JwtTokenProvider() {
         
-        String secret = "YV9sb25nX3NlY3VyZV9iYXNlNjRfZW5jb2RlZF9zZWNyZXRfa2V5X2hlcmVub3dhbGxhbG9vYW4=";
+        String secret = "";
         
         byte[] decodedKey = Decoders.BASE64.decode(secret);
         this.secretKey = new SecretKeySpec(decodedKey, "HmacSHA256");
