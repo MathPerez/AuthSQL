@@ -16,11 +16,13 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtTokenProvider tokenJwt;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         
         if (userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-            JwtTokenProvider tokenJwt = new JwtTokenProvider();
             String token = tokenJwt.createToken(loginRequest.getUsername());
             String username = tokenJwt.getUsernameFromToken(token); 
             return ResponseEntity.ok(new JwtResponse(token, username));
@@ -33,5 +35,4 @@ public class AuthController {
         User user = userService.createUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
-
 }

@@ -14,7 +14,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public boolean authenticate(String username, String password) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             // Aqui você deve verificar se a senha está correta
             return password.equals(user.getPassword()); // Você pode usar um encoder aqui para comparar senhas hashadas
