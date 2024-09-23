@@ -1,8 +1,13 @@
 package com.AuthSQL.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.SignatureException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -16,9 +21,7 @@ public class JwtTokenProvider {
 
     private final Key secretKey;
 
-    public JwtTokenProvider() {
-        
-        String secret = "";
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
         
         byte[] decodedKey = Decoders.BASE64.decode(secret);
         this.secretKey = new SecretKeySpec(decodedKey, "HmacSHA256");
@@ -35,6 +38,43 @@ public class JwtTokenProvider {
                 .expiration(validity)
                 .signWith(secretKey)
                 .compact();
+    }
+
+
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    
+    public boolean validateToken(String token, UserDetails userDetails) {
+        try {
+            
+            Claims claims = getAllClaimsFromToken(token);
+
+            
+            if (claims.getExpiration().before(new Date())) {
+                return false;
+            }
+
+            String username = claims.getSubject();
+            return username.equals(userDetails.getUsername());
+        } catch (ExpiredJwtException e) {
+            
+            System.out.println("Token expirado");
+            return false;
+        } catch (SignatureException e) {
+            
+            System.out.println("Assinatura inválida");
+            return false;
+        } catch (Exception e) {
+            
+            System.out.println("Token inválido");
+            return false;
+        }
     }
 
     public String getUsernameFromToken(String token) {
